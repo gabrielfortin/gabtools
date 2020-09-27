@@ -1,18 +1,25 @@
+import numpy
 from numpy import float16, float32, float64
 import warnings
+
+supports128 = True
 
 try:
     from numpy import float128
 except ImportError:
+    supports128 = False
     pass
 
 class FloatArray:
     def __init__(self, numbers=None, floatType=None):
         
-        if floatType == 16 or floatType == 32 or floatType == 64 or floatType == 128:
+        if floatType in [16, 32, 64] or floatType == 128 and supports128:
             self.floatType = floatType
+        elif floatType == 128 and not supports128:
+            warnings.warn(f'{floatType} does not exist on this system. Switching to float64 instead.')
+            self.floatType = 64
         else:
-            warnings.warn(f'This type of float: {floatType}, does not exist. Switching to float64 instead.')
+            warnings.warn(f'{floatType} is not a valid or supported float type. Switching to float64 instead.')
             self.floatType = 64
 
         self.numbers = []
@@ -85,14 +92,12 @@ class FloatArray:
                 self.numbers.append(float64(number))
                 
         elif self.is128:
-            try:
+            if supports128:
                 for number in numbers:
                     self.numbers.append(float128(number))
-            except:
-                self.floatType = 64
-                for number in numbers:
-                    self.numbers.append(float64(number))
-                print("float128 is not supported on your device. Converted to 64.")
+            else:
+                self.numbers = numbers
+                warnings.warn(f'{self.floatType} does not exist on this system. Skipping conversion.')
 
 def maths():
     pass
