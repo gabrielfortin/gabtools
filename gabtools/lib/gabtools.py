@@ -1,5 +1,6 @@
-import numpy
 from numpy import float16, float32, float64
+import warnings
+
 try:
     from numpy import float128
 except ImportError:
@@ -11,6 +12,7 @@ class FloatArray:
         if floatType == 16 or floatType == 32 or floatType == 64 or floatType == 128:
             self.floatType = floatType
         else:
+            warnings.warn(f'This type of float: {floatType}, does not exist. Switching to float64 instead.')
             self.floatType = 64
 
         self.numbers = []
