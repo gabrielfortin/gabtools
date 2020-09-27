@@ -91,4 +91,6 @@ class FloatArray:
                 for number in numbers:
                     self.numbers.append(float64(number))
                 print("float128 is not supported on your device. Converted to 64.")
-            
+
+def maths():
+    pass

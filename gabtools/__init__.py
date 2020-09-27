@@ -1,1 +1,1 @@
-from lib.gabtools import FloatArray
+from .maths import FloatArray
