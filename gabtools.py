@@ -1,8 +1,8 @@
-from numpy import float32, float64, float128
+from numpy import float16, float32, float64, float128
 class FloatArray:
     def __init__(self, numbers=None, floatType=None):
         
-        if floatType == 32 or floatType == 64 or floatType == 128:
+        if floatType == 16 or floatType == 32 or floatType == 64 or floatType == 128:
             self.floatType = floatType
         else:
             self.floatType = 64
@@ -20,7 +20,10 @@ class FloatArray:
       
     def __setitem__(self,index,value):
         self.numbers[index] = value
-        
+
+    @property
+    def is16(self):
+        return self.floatType == 16
     @property
     def is32(self):
         return self.floatType == 32
@@ -32,6 +35,8 @@ class FloatArray:
         return self.floatType == 128
         
     def append(self, elem):
+        if self.is16:
+            self.numbers.append(float16(elem))
         if self.is32:
             self.numbers.append(float32(elem))
         elif self.is128:
@@ -39,6 +44,10 @@ class FloatArray:
         else:
           self.numbers.append(float64(elem))
 
+    def convertTo16(self):
+        self.floatType = 16
+        self.convertToType()
+    
     def convertTo32(self):
         self.floatType = 32
         self.convertToType()
@@ -54,14 +63,19 @@ class FloatArray:
     def convertToType(self):
         numbers = self.numbers
         self.numbers = []
-        if self.floatType == 32:
+        
+        if self.is16:
+            for number in numbers:
+                self.numbers.append(float16(number))
+        
+        if self.is32:
             for number in numbers:
                 self.numbers.append(float32(number))
 
-        elif self.floatType == 64:
+        elif self.is64:
             for number in numbers:
                 self.numbers.append(float64(number))
                 
-        elif self.floatType == 128:
+        elif self.is128:
             for number in numbers:
                 self.numbers.append(float128(number))
