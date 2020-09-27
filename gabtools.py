@@ -1,4 +1,10 @@
-from numpy import float16, float32, float64, float128
+import numpy
+from numpy import float16, float32, float64
+try:
+    from numpy import float128
+except ImportError:
+    pass
+
 class FloatArray:
     def __init__(self, numbers=None, floatType=None):
         
@@ -77,5 +83,12 @@ class FloatArray:
                 self.numbers.append(float64(number))
                 
         elif self.is128:
-            for number in numbers:
-                self.numbers.append(float128(number))
+            try:
+                for number in numbers:
+                    self.numbers.append(float128(number))
+            except:
+                self.floatType = 64
+                for number in numbers:
+                    self.numbers.append(float64(number))
+                print("float128 is not supported on your device. Converted to 64.")
+            
